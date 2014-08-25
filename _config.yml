@@ -1,0 +1,4 @@
+title_tag_text: DebOps - Open Source infrastructure
+h1_tag_text: DebOps
+
+exclude: ["README.md", "CNAME"]
