@@ -1,14 +1,12 @@
 <img src="debops.png" width="128px" height="128px" style="float: right;" />
 
-DebOps is a collection of [Ansible](http://ansible.com/)
-playbooks, roles and custom scripts which can create and maintain
-[Debian](http://debian.org/)-based Linux infrastructure, scalable from one
-virtual machine to an entire datacenter.
+DebOps is a collection of [Ansible](http://ansible.com/) playbooks and roles
+which can create and maintain [Debian](http://debian.org/)-based Linux
+infrastructure, scalable from one virtual machine to an entire datacenter.
 
 You can get the [source code](https://github.com/ginas/ginas/) from GitHub or
-hang out with the authors on
-[#debops](https://webchat.freenode.net/?channels=debops) IRC channel on
-Freenode.
+hang out with the authors on IRC
+@ [#debops](https://webchat.freenode.net/?channels=debops) on Freenode.
 
 <a href="https://travis-ci.org/ginas/ginas/"><img src="https://travis-ci.org/ginas/ginas.png?branch=master" style="float: left;" alt="Travis-CI" />
 
