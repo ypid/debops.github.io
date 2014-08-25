@@ -2,7 +2,7 @@
 
 DebOps is a collection of [Ansible](http://ansible.com/) playbooks and roles
 which can create and maintain [Debian](http://debian.org/)-based Linux
-infrastructure, scalable from one virtual machine to an entire datacenter.
+infrastructure, scalable from one virtual machine to an entire data center.
 
 You can get the [source code](https://github.com/ginas/ginas/) from GitHub or
 hang out with the authors on IRC
