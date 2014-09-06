@@ -124,6 +124,11 @@ table {
 td, th {
   padding: .25rem .5rem;
   border: 1px solid #ccc;
+  text-align: left;
+}
+
+tr:nth-child(even) {
+  background-color: #eee;
 }
 
 pre, code {
@@ -153,6 +158,15 @@ pre > code {
 .li-intro {
   font-weight: bold;
   color: #4f9400;
+}
+
+td a:link, td a:visited {
+  color: #006ea1;
+}
+
+td {
+  border-right: 0;
+  border-left: 0;
 }
 
 /* CTA button */
