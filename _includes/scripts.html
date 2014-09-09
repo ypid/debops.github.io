@@ -97,7 +97,19 @@
 
     var link = 'http://travis-ci.org/debops/' + role;
     var png = 'https://secure.travis-ci.org/debops/ansible-' + role + '.png';
-    var code = '<a style="float: right;" href="' + link + '"><img src="' + png + '" alt="Build status" /></a>';
+    var code = '<a style="float: left;" href="' + link + '"><img src="' + png + '" alt="Build status" /></a>';
+    return code;
+  }
+
+  function testsuite_link(role) {
+    var normalized_role = role;
+
+    if (normalized_role === 'ansible') {
+      role = 'role-ansible'
+    }
+
+    var link = 'https://github.com/debops/test-suite/tree/master/ansible-' + role;
+    var code = '<a style="float: right; font-size: 0.7rem;" href="' + link + '">[view tests]</a>';
     return code;
   }
 
@@ -110,12 +122,19 @@
 
       var row = tbody.insertRow(tbody.rows.length);
       var role = row.insertCell(0);
-      var badge = row.insertCell(1);
-      var role_name = github_repo(roles[i])
-      var role_badge = travis_badge(roles[i])
+      var travis = row.insertCell(1);
+      var testsuite = row.insertCell(2);
+      var role_name = github_repo(roles[i]);
+      var role_travis = travis_badge(roles[i]);
+      var role_testsuite = testsuite_link(roles[i]);
+
+      var tds = document.getElementsByTagName('td');
+      tds[1].style.width = '4rem';
+      tds[2].style.width = '4.2rem';
 
       role.insertAdjacentHTML('beforeend', role_name);
-      badge.insertAdjacentHTML('beforeend', role_badge);
+      travis.insertAdjacentHTML('beforeend', role_travis);
+      testsuite.insertAdjacentHTML('beforeend', role_testsuite);
     }
   }
 
