@@ -18,7 +18,7 @@ A collection of [Ansible](http://ansible.com/) playbooks, scalable from one cont
 
 - <span class="li-intro">Custom scripts</span> to tie everything together
 
-<a class="gh-link" href="https://github.com/debops/debops">Check it out on Github</a>
+<a class="gh-link" href="https://github.com/debops/debops">Check it out on GitHub</a>
 
 ***
 
