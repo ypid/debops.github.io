@@ -3,9 +3,15 @@
     <li>
       <a class="nav-link nav-item" href="https://github.com/debops/debops-playbooks">&lt; Playbooks and roles</a>
     </li>
+{% if page.url == '/status.html' %}
+    <li>
+      <a class="nav-link nav-item" href="index.html">Home</a>
+    </li>
+{% else %}
     <li>
       <a class="nav-link nav-item" href="status.html">Status page</a>
     </li>
+{% endif %}
     <li>
       <a class="nav-link nav-item" href="https://github.com/debops/debops/blob/master/doc/using-the-scripts.rst">Scripts &gt;</a>
     </li>
