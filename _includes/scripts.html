@@ -5,6 +5,141 @@
          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
   ga('create', 'UA-54222917-1', 'auto');
-    ga('send', 'pageview');
+  ga('send', 'pageview');
+</script>
 
+<script>
+(function() {
+
+  // List of roles.
+  // --------------------------------------------------------------------------
+
+  var roles = [
+    'ansible',
+    'apt',
+    'apt_preferences',
+    'auth',
+    'backporter',
+    'boxbackup',
+    'console',
+    'debops',
+    'debug',
+    'dhcpd',
+    'directories',
+    'dnsmasq',
+    'encfs',
+    'etc_services',
+    'etherpad',
+    'ferm',
+    'gitlab',
+    'gitlab_ci',
+    'gitlab_ci_runner',
+    'gitusers',
+    'ifupdown',
+    'java',
+    'kvm',
+    'lxc',
+    'mailman',
+    'monit',
+    'monkeysphere',
+    'mysql',
+    'nat',
+    'nfs',
+    'nginx',
+    'nodejs',
+    'ntp',
+    'openvz',
+    'owncloud',
+    'php5',
+    'phpipam',
+    'phpmyadmin',
+    'pki',
+    'postfix',
+    'postgresql',
+    'rails_deploy',
+    'redis',
+    'reprepro',
+    'rsyslog',
+    'ruby',
+    'safekeep',
+    'samba',
+    'secret',
+    'sftpusers',
+    'sks',
+    'smstools',
+    'sshd',
+    'sshkeys',
+    'tcpwrappers',
+    'users'
+  ];
+
+  // --------------------------------------------------------------------------
+
+  function github_repo(role) {
+    var normalized_role = role;
+
+    if (normalized_role === 'ansible') {
+      normalized_role = 'role-ansible'
+    }
+
+    var link = 'https://github.com/debops/ansible-' + normalized_role;
+    var code = '<a href="' + link + '" title="View it on Github">' + role + '</a>';
+
+    return code;
+  }
+
+  function travis_badge(role) {
+    var normalized_role = role;
+
+    if (normalized_role === 'ansible') {
+      role = 'role-ansible'
+    }
+
+    var link = 'http://travis-ci.org/debops/' + role;
+    var png = 'https://secure.travis-ci.org/debops/ansible-' + role + '.png';
+    var code = '<a style="float: left;" href="' + link + '"><img src="' + png + '" alt="Build status" /></a>';
+    return code;
+  }
+
+  function testsuite_link(role) {
+    var normalized_role = role;
+
+    if (normalized_role === 'ansible') {
+      role = 'role-ansible'
+    }
+
+    var link = 'https://github.com/debops/test-suite/tree/master/ansible-' + role;
+    var code = '<a style="float: right; font-size: 0.7rem;" href="' + link + '">[view tests]</a>';
+    return code;
+  }
+
+  function build_status() {
+    var tbody = document.getElementById('status').getElementsByTagName('tbody')[0];
+    var role_count = roles.length;
+
+    for (var i = 0; i < role_count; i++) {
+      var role_from_array = roles[i];
+
+      var row = tbody.insertRow(tbody.rows.length);
+      var role = row.insertCell(0);
+      var travis = row.insertCell(1);
+      var testsuite = row.insertCell(2);
+      var role_name = github_repo(roles[i]);
+      var role_travis = travis_badge(roles[i]);
+      var role_testsuite = testsuite_link(roles[i]);
+
+      var tds = document.getElementsByTagName('td');
+      tds[1].style.width = '4rem';
+      tds[2].style.width = '4.2rem';
+
+      role.insertAdjacentHTML('beforeend', role_name);
+      travis.insertAdjacentHTML('beforeend', role_travis);
+      testsuite.insertAdjacentHTML('beforeend', role_testsuite);
+    }
+  }
+
+  build_status();
+
+  document.getElementById('role_count').innerHTML = roles.length;
+})();
 </script>
