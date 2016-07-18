@@ -10,7 +10,7 @@ A collection of [Ansible](http://ansible.com/) playbooks, scalable from one cont
 
 #### DebOps is a framework
 
-- <span class="li-intro">60+ highly extensible roles</span> with sane defaults
+- <span class="li-intro"><span id="role_count">100+</span> highly extensible roles</span> with sane defaults
 
 - <span class="li-intro">Tuned for production</span> and works great for development
 

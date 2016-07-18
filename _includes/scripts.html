@@ -1,170 +1,110 @@
 <script>
 (function() {
 
-  // List of roles.
-  // --------------------------------------------------------------------------
+  function getJSON(url, successHandler, errorHandler) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('get', url, true);
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+      var status = xhr.status;
+      if (status == 200) {
+        successHandler && successHandler(xhr.response);
+      } else {
+        errorHandler && errorHandler(status);
+      }
+    };
+    xhr.send();
+  };
 
-  var roles = [
-    'apt',
-    'apt_cacher_ng',
-    'apt_install',
-    'apt_preferences',
-    'atd',
-    'auth',
-    'backporter',
-    'bootstrap',
-    'boxbackup',
-    'console',
-    'core',
-    'cryptsetup',
-    'debops',
-    'dhcpd',
-    'dhparam',
-    'directories',
-    'dnsmasq',
-    'docker',
-    'docker_gen',
-    'dokuwiki',
-    'dovecot',
-    'elasticsearch',
-    'etc_services',
-    'etherpad',
-    'fail2ban',
-    'fcgiwrap',
-    'ferm',
-    'gitlab',
-    'gitlab_ci',
-    'gitlab_ci_runner',
-    'gitusers',
-    'golang',
-    'grub',
-    'hwraid',
-    'ifupdown',
-    'ipxe',
-    'iscsi',
-    'java',
-    'librenms',
-    'libvirt',
-    'libvirtd',
-    'lvm',
-    'lxc',
-    'mailman',
-    'mariadb',
-    'mariadb_server',
-    'memcached',
-    'monit',
-    'monkeysphere',
-    'mysql',
-    'nfs',
-    'nginx',
-    'nodejs',
-    'ntp',
-    'openvz',
-    'owncloud',
-    'php5',
-    'phpipam',
-    'phpmyadmin',
-    'pki',
-    'postfix',
-    'postgresql',
-    'postgresql_server',
-    'preseed',
-    'radvd',
-    'rails_deploy',
-    'redis',
-    'reprepro',
-    'rsnapshot',
-    'rstudio_server',
-    'rsyslog',
-    'ruby',
-    'safekeep',
-    'salt',
-    'samba',
-    'secret',
-    'sftpusers',
-    'sks',
-    'slapd',
-    'smstools',
-    'snmpd',
-    'sshd',
-    'sshkeys',
-    'stunnel',
-    'subnetwork',
-    'swapfile',
-    'tcpwrappers',
-    'tftpd',
-    'tgt',
-    'tinc',
-    'users'
-  ];
-
-  // --------------------------------------------------------------------------
-
-  function github_repo(role) {
-    var normalized_role = role;
-
-    if (normalized_role === 'ansible') {
-      normalized_role = 'role-ansible'
-    }
-
-    var link = 'https://github.com/debops/ansible-' + normalized_role;
-    var code = '<a href="' + link + '" title="View it on Github">' + role + '</a>';
-
-    return code;
+  function github_repo(metadata, role_full_name) {
+    return '<a href="' + metadata.vcs_url + '" title="View it on Github">' + role_full_name + '</a>';
   }
 
-  function travis_badge(role) {
-    var normalized_role = role;
-
-    if (normalized_role === 'ansible') {
-      role = 'role-ansible'
-    }
-
-    var link = 'http://travis-ci.org/debops/ansible-' + role;
-    var png = 'https://secure.travis-ci.org/debops/ansible-' + role + '.png';
-    var code = '<a style="float: left;" href="' + link + '"><img src="' + png + '" alt="Build status" /></a>';
-    return code;
+  function travis_badge(metadata, role_full_name) {
+    return '<a style="float: left;" href="' + metadata.ci_url + '"><img src="' + metadata.ci_badge_url + '" alt="Build status" /></a>';
   }
 
-  function testsuite_link(role) {
-    var normalized_role = role;
+  function testsuite_link(metadata, role_full_name) {
+    return '<a style="float: right; font-size: 0.7rem;" href="' + metadata.test_suite_url + '">[view tests]</a>';
+  }
 
-    if (normalized_role === 'ansible') {
-      role = 'role-ansible'
+  function get_role_version(metadata) {
+    var version = 'unknown';
+    if (metadata.hasOwnProperty('version')) {
+      version = metadata.version;
     }
+    return version;
+  }
 
-    var link = 'https://github.com/debops/test-suite/tree/master/ansible-' + role;
-    var code = '<a style="float: right; font-size: 0.7rem;" href="' + link + '">[view tests]</a>';
-    return code;
+  function role_format_version(metadata, role_full_name) {
+    return '<span style="float: right; font-size: 0.7rem;">[DebOps role standard: v' + metadata.role_format_version + ']</span>';
+  }
+
+  function role_version(metadata, role_full_name) {
+    return '<span style="float: right; font-size: 0.7rem;">[Version: ' + get_role_version(metadata) + ']</span>';
+  }
+
+  function min_ansible_version(metadata, role_full_name) {
+    return '<span style="float: right; font-size: 0.7rem;">[Min. Ansible : v' + metadata.min_ansible_version + ']</span>';
   }
 
   function build_status() {
     var tbody = document.getElementById('status').getElementsByTagName('tbody')[0];
-    var role_count = roles.length;
+    var role_count = 0;
 
-    for (var i = 0; i < role_count; i++) {
-      var role_from_array = roles[i];
+    getJSON('https://api.debops.org/v0/roles/debops.json', function(data) {
+      for (var key in data) {
+        if (data.hasOwnProperty(key)) {
+          role_count++;
 
-      var row = tbody.insertRow(tbody.rows.length);
-      var role = row.insertCell(0);
-      var travis = row.insertCell(1);
-      var testsuite = row.insertCell(2);
-      var role_name = github_repo(roles[i]);
-      var role_travis = travis_badge(roles[i]);
-      var role_testsuite = testsuite_link(roles[i]);
+          var row = tbody.insertRow(tbody.rows.length);
 
-      var tds = document.getElementsByTagName('td');
-      tds[1].style.width = '4rem';
-      tds[2].style.width = '4.2rem';
+          row.insertCell(0).insertAdjacentHTML('beforeend',
+            github_repo(data[key], key)
+            // + ' ' + role_format_version(data[key], key)
+            // + ' ' + role_version_and_format(data[key], key)
+          );
+          row.insertCell(1).insertAdjacentHTML('beforeend',
+            travis_badge(data[key], key)
+          );
+          row.insertCell(2).insertAdjacentHTML('beforeend',
+            testsuite_link(data[key], key)
+          );
+          row.insertCell(3).insertAdjacentHTML('beforeend',
+            role_version(data[key], key)
+          );
+          row.insertCell(4).insertAdjacentHTML('beforeend',
+            role_format_version(data[key], key)
+          );
 
-      role.insertAdjacentHTML('beforeend', role_name);
-      travis.insertAdjacentHTML('beforeend', role_travis);
-      testsuite.insertAdjacentHTML('beforeend', role_testsuite);
-    }
+          var tds = document.getElementsByTagName('td');
+          tds[1].style.width = '4rem';
+          tds[2].style.width = '4.2rem';
+          tds[3].style.width = '8rem';
+          tds[4].style.width = '12rem';
+        }
+      }
+      document.getElementById('role_count').innerHTML = role_count;
+    });
   }
 
-  build_status();
+  function update_role_count() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('get', 'https://api.debops.org/v0/roles/count:debops', true);
+    xhr.onload = function() {
+      var status = xhr.status;
+      if (status == 200) {
+        document.getElementById('role_count').innerHTML = xhr.response;
+      }
+    };
+    xhr.send();
+  }
 
-  document.getElementById('role_count').innerHTML = roles.length;
+  if (document.getElementById('status')) {
+    build_status();
+  } else if (document.getElementById('role_count')) {
+    update_role_count();
+  }
+
 })();
 </script>
