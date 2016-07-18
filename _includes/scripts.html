@@ -37,7 +37,7 @@
   }
 
   function role_format_version(metadata, role_full_name) {
-    return '<span style="float: right; font-size: 0.7rem;">[DebOps role standard: v' + metadata.role_format_version + ']</span>';
+    return '<span style="float: right; font-size: 0.7rem;">[Standards Version: v' + metadata.role_format_version + ']</span>';
   }
 
   function role_version(metadata, role_full_name) {
@@ -80,8 +80,8 @@
           var tds = document.getElementsByTagName('td');
           tds[1].style.width = '4rem';
           tds[2].style.width = '4.2rem';
-          tds[3].style.width = '8rem';
-          tds[4].style.width = '12rem';
+          tds[3].style.width = '7rem';
+          tds[4].style.width = '10rem';
         }
       }
       document.getElementById('role_count').innerHTML = role_count;
