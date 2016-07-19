@@ -28,20 +28,16 @@
     return '<a style="float: right; font-size: 0.7rem;" href="' + metadata.test_suite_url + '">[view tests]</a>';
   }
 
-  function get_role_version(metadata) {
-    var version = 'unknown';
-    if (metadata.hasOwnProperty('version')) {
-      version = metadata.version;
-    }
-    return version;
-  }
-
   function role_format_version(metadata, role_full_name) {
-    return '<span style="float: right; font-size: 0.7rem;">[Standards Version: v' + metadata.role_format_version + ']</span>';
+    return '<span style="float: right; font-size: 0.7rem;">[Standards: v' + metadata.role_format_version + ']</span>';
   }
 
   function role_version(metadata, role_full_name) {
-    return '<span style="float: right; font-size: 0.7rem;">[Version: ' + get_role_version(metadata) + ']</span>';
+    var version = 'unknown';
+    if (metadata.hasOwnProperty('version')) {
+      version = 'v' + metadata.version;
+    }
+    return '<span style="float: right; font-size: 0.7rem;"' + (version === 'unknown' ? ' title="Unknown because currently not provided by the DebOps API (reason: Standards Version too old)." ' : '') + '>[Release: ' + version + ']</span>';
   }
 
   function min_ansible_version(metadata, role_full_name) {
@@ -81,7 +77,7 @@
           tds[1].style.width = '4rem';
           tds[2].style.width = '4.2rem';
           tds[3].style.width = '7rem';
-          tds[4].style.width = '10rem';
+          tds[4].style.width = '7rem';
         }
       }
       document.getElementById('role_count').innerHTML = role_count;
