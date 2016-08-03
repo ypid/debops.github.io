@@ -49,7 +49,7 @@
   function role_format_version(metadata, role_full_name) {
     var span = document.createElement('span');
     span.setAttribute('class', 'item_attr');
-    span.innerHTML = '[Standards: v' + metadata.role_format_version + ']';
+    span.innerHTML = 'v' + metadata.role_format_version;
     return span;
   }
 
@@ -66,11 +66,12 @@
     if (metadata.hasOwnProperty('version')) {
       version = 'v' + metadata.version;
     }
+    elem.innerHTML = version;
+
     if (version === 'unknown') {
       elem.setAttribute('title', 'Unknown because currently not provided by the DebOps API (reason: Standards Version too old).');
     }
 
-    elem.innerHTML = '[Release: ' + version + ']';
     return elem;
   }
 
@@ -78,6 +79,33 @@
     var span = document.createElement('span');
     span.setAttribute('class', 'item_attr');
     span.innerHTML = '[Min. Ansible : v' + metadata.min_ansible_version + ']';
+    return span;
+  }
+
+  function get_maintainers(metadata, role_full_name) {
+    var span = document.createElement('span');
+
+    if (metadata.hasOwnProperty('authors')) {
+      for (var i = 0; i < metadata.authors.length; i++) {
+        if (metadata.authors[i].maintainer === true) {
+          if (span.childNodes.length > 0) {
+            var sep = document.createElement('span');
+            sep.innerHTML = ', ';
+            span.appendChild(sep);
+          }
+
+          var a = document.createElement('a');
+          a.setAttribute('href', 'https://docs.debops.org/en/latest/debops-keyring/docs/entities.html#debops-keyring-entity-' + metadata.authors[i].nick);
+          a.setAttribute('title', metadata.authors[i].name);
+          a.innerHTML = metadata.authors[i].nick;
+          span.appendChild(a);
+        }
+      }
+    }
+    if (span.childNodes.length == 0) {
+      span.setAttribute('title', 'Unknown because currently not defined in the Changelog file. Fallback maintainer is the DebOps Project Leader.');
+      span.innerHTML = 'Unknown';
+    }
     return span;
   }
 
@@ -97,12 +125,7 @@
           row.insertCell(2).appendChild(testsuite_link(data[key], key));
           row.insertCell(3).appendChild(role_version(data[key], key));
           row.insertCell(4).appendChild(role_format_version(data[key], key));
-
-          var tds = document.getElementsByTagName('td');
-          tds[1].style.width = '4rem';
-          tds[2].style.width = '4.2rem';
-          tds[3].style.width = '7rem';
-          tds[4].style.width = '7rem';
+          row.insertCell(5).appendChild(get_maintainers(data[key], key));
         }
       }
       document.getElementById('role_count').innerHTML = role_count;

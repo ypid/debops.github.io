@@ -4,7 +4,13 @@
   padding: 0 1rem;
 }
 
-td .item_attr {
+td.role_name {
+  width: 8rem;
+}
+th#ci_test {
+  width: 6rem;
+}
+td.item_attr {
   float: right;
   font-size: 0.7rem;
 }
