@@ -17,19 +17,40 @@
   };
 
   function github_repo(metadata, role_full_name) {
-    return '<a href="' + metadata.vcs_url + '" title="View it on Github">' + role_full_name + '</a>';
+    var a = document.createElement('a');
+    a.setAttribute('class', 'item_attr');
+    a.setAttribute('href', metadata.vcs_url);
+    a.setAttribute('title', 'View it on GitHub');
+    a.innerHTML = role_full_name ;
+    return a;
   }
 
   function travis_badge(metadata, role_full_name) {
-    return '<a style="float: left;" href="' + metadata.ci_url + '"><img src="' + metadata.ci_badge_url + '" alt="Build status" /></a>';
+    var img = document.createElement('img');
+    img.setAttribute('src', metadata.ci_badge_url);
+    img.setAttribute('alt', 'Build status');
+
+    var a = document.createElement('a');
+    a.setAttribute('href', metadata.ci_url);
+    a.setAttribute('class', 'item_attr');
+    a.setAttribute('href', metadata.ci_url);
+    a.appendChild(img)
+    return a;
   }
 
   function testsuite_link(metadata, role_full_name) {
-    return '<a style="float: right; font-size: 0.7rem;" href="' + metadata.test_suite_url + '">[view tests]</a>';
+    var a = document.createElement('a');
+    a.setAttribute('class', 'item_attr');
+    a.setAttribute('href', metadata.test_suite_url);
+    a.innerHTML = '[view tests]';
+    return a;
   }
 
   function role_format_version(metadata, role_full_name) {
-    return '<span style="float: right; font-size: 0.7rem;">[Standards: v' + metadata.role_format_version + ']</span>';
+    var span = document.createElement('span');
+    span.setAttribute('class', 'item_attr');
+    span.innerHTML = '[Standards: v' + metadata.role_format_version + ']';
+    return span;
   }
 
   function role_version(metadata, role_full_name) {
@@ -39,7 +60,7 @@
     } else {
       var elem = document.createElement('span');
     }
-    elem.setAttribute('style', 'float: right; font-size: 0.7rem;');
+    elem.setAttribute('class', 'item_attr');
 
     var version = 'unknown';
     if (metadata.hasOwnProperty('version')) {
@@ -54,7 +75,10 @@
   }
 
   function min_ansible_version(metadata, role_full_name) {
-    return '<span style="float: right; font-size: 0.7rem;">[Min. Ansible : v' + metadata.min_ansible_version + ']</span>';
+    var span = document.createElement('span');
+    span.setAttribute('class', 'item_attr');
+    span.innerHTML = '[Min. Ansible : v' + metadata.min_ansible_version + ']';
+    return span;
   }
 
   function build_status() {
@@ -68,23 +92,11 @@
 
           var row = tbody.insertRow(tbody.rows.length);
 
-          row.insertCell(0).insertAdjacentHTML('beforeend',
-            github_repo(data[key], key)
-            // + ' ' + role_format_version(data[key], key)
-            // + ' ' + role_version_and_format(data[key], key)
-          );
-          row.insertCell(1).insertAdjacentHTML('beforeend',
-            travis_badge(data[key], key)
-          );
-          row.insertCell(2).insertAdjacentHTML('beforeend',
-            testsuite_link(data[key], key)
-          );
-          row.insertCell(3).appendChild(
-            role_version(data[key], key)
-          );
-          row.insertCell(4).insertAdjacentHTML('beforeend',
-            role_format_version(data[key], key)
-          );
+          row.insertCell(0).appendChild(github_repo(data[key], key));
+          row.insertCell(1).appendChild(travis_badge(data[key], key));
+          row.insertCell(2).appendChild(testsuite_link(data[key], key));
+          row.insertCell(3).appendChild(role_version(data[key], key));
+          row.insertCell(4).appendChild(role_format_version(data[key], key));
 
           var tds = document.getElementsByTagName('td');
           tds[1].style.width = '4rem';
