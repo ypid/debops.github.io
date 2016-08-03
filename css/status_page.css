@@ -3,3 +3,14 @@
   margin: 0 auto;
   padding: 0 1rem;
 }
+
+td.role_name {
+  width: 8rem;
+}
+th#ci_test {
+  width: 6rem;
+}
+td.item_attr {
+  float: right;
+  font-size: 0.7rem;
+}

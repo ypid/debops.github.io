@@ -17,31 +17,96 @@
   };
 
   function github_repo(metadata, role_full_name) {
-    return '<a href="' + metadata.vcs_url + '" title="View it on Github">' + role_full_name + '</a>';
+    var a = document.createElement('a');
+    a.setAttribute('class', 'item_attr');
+    a.setAttribute('href', metadata.vcs_url);
+    a.setAttribute('title', 'View it on GitHub');
+    a.innerHTML = role_full_name ;
+    return a;
   }
 
   function travis_badge(metadata, role_full_name) {
-    return '<a style="float: left;" href="' + metadata.ci_url + '"><img src="' + metadata.ci_badge_url + '" alt="Build status" /></a>';
+    var img = document.createElement('img');
+    img.setAttribute('src', metadata.ci_badge_url);
+    img.setAttribute('alt', 'Build status');
+
+    var a = document.createElement('a');
+    a.setAttribute('href', metadata.ci_url);
+    a.setAttribute('class', 'item_attr');
+    a.setAttribute('href', metadata.ci_url);
+    a.appendChild(img)
+    return a;
   }
 
   function testsuite_link(metadata, role_full_name) {
-    return '<a style="float: right; font-size: 0.7rem;" href="' + metadata.test_suite_url + '">[view tests]</a>';
+    var a = document.createElement('a');
+    a.setAttribute('class', 'item_attr');
+    a.setAttribute('href', metadata.test_suite_url);
+    a.innerHTML = '[view tests]';
+    return a;
   }
 
   function role_format_version(metadata, role_full_name) {
-    return '<span style="float: right; font-size: 0.7rem;">[Standards: v' + metadata.role_format_version + ']</span>';
+    var span = document.createElement('span');
+    span.setAttribute('class', 'item_attr');
+    span.innerHTML = 'v' + metadata.role_format_version;
+    return span;
   }
 
   function role_version(metadata, role_full_name) {
+    if (metadata.hasOwnProperty('changelog_url')) {
+      var elem = document.createElement('a');
+      elem.setAttribute('href', metadata.changelog_url);
+    } else {
+      var elem = document.createElement('span');
+    }
+    elem.setAttribute('class', 'item_attr');
+
     var version = 'unknown';
     if (metadata.hasOwnProperty('version')) {
       version = 'v' + metadata.version;
     }
-    return '<span style="float: right; font-size: 0.7rem;"' + (version === 'unknown' ? ' title="Unknown because currently not provided by the DebOps API (reason: Standards Version too old)." ' : '') + '>[Release: ' + version + ']</span>';
+    elem.innerHTML = version;
+
+    if (version === 'unknown') {
+      elem.setAttribute('title', 'Unknown because currently not provided by the DebOps API (reason: Standards Version too old).');
+    }
+
+    return elem;
   }
 
   function min_ansible_version(metadata, role_full_name) {
-    return '<span style="float: right; font-size: 0.7rem;">[Min. Ansible : v' + metadata.min_ansible_version + ']</span>';
+    var span = document.createElement('span');
+    span.setAttribute('class', 'item_attr');
+    span.innerHTML = '[Min. Ansible : v' + metadata.min_ansible_version + ']';
+    return span;
+  }
+
+  function get_maintainers(metadata, role_full_name) {
+    var span = document.createElement('span');
+
+    if (metadata.hasOwnProperty('authors')) {
+      for (var i = 0; i < metadata.authors.length; i++) {
+        if (metadata.authors[i].maintainer === true) {
+          if (span.childNodes.length > 0) {
+            var sep = document.createElement('span');
+            sep.innerHTML = ', ';
+            span.appendChild(sep);
+          }
+
+          var a = document.createElement('a');
+          a.setAttribute('href', 'https://docs.debops.org/en/latest/debops-keyring/docs/entities.html#debops-keyring-entity-' + metadata.authors[i].nick);
+          a.setAttribute('title', metadata.authors[i].name);
+          a.innerHTML = metadata.authors[i].nick;
+          span.appendChild(a);
+        }
+      }
+    }
+    if (span.childNodes.length == 0) {
+      span.setAttribute('title', 'Unknown because currently not defined in the Changelog file. Fallback maintainer is the DebOps Project Leader.');
+      span.innerHTML = 'Unknown';
+    }
+    return span;
   }
 
   function build_status() {
@@ -55,29 +120,12 @@
 
           var row = tbody.insertRow(tbody.rows.length);
 
-          row.insertCell(0).insertAdjacentHTML('beforeend',
-            github_repo(data[key], key)
-            // + ' ' + role_format_version(data[key], key)
-            // + ' ' + role_version_and_format(data[key], key)
-          );
-          row.insertCell(1).insertAdjacentHTML('beforeend',
-            travis_badge(data[key], key)
-          );
-          row.insertCell(2).insertAdjacentHTML('beforeend',
-            testsuite_link(data[key], key)
-          );
-          row.insertCell(3).insertAdjacentHTML('beforeend',
-            role_version(data[key], key)
-          );
-          row.insertCell(4).insertAdjacentHTML('beforeend',
-            role_format_version(data[key], key)
-          );
-
-          var tds = document.getElementsByTagName('td');
-          tds[1].style.width = '4rem';
-          tds[2].style.width = '4.2rem';
-          tds[3].style.width = '7rem';
-          tds[4].style.width = '7rem';
+          row.insertCell(0).appendChild(github_repo(data[key], key));
+          row.insertCell(1).appendChild(travis_badge(data[key], key));
+          row.insertCell(2).appendChild(testsuite_link(data[key], key));
+          row.insertCell(3).appendChild(role_version(data[key], key));
+          row.insertCell(4).appendChild(role_format_version(data[key], key));
+          row.insertCell(5).appendChild(get_maintainers(data[key], key));
         }
       }
       document.getElementById('role_count').innerHTML = role_count;
