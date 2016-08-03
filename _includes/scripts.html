@@ -33,11 +33,24 @@
   }
 
   function role_version(metadata, role_full_name) {
+    if (metadata.hasOwnProperty('changelog_url')) {
+      var elem = document.createElement('a');
+      elem.setAttribute('href', metadata.changelog_url);
+    } else {
+      var elem = document.createElement('span');
+    }
+    elem.setAttribute('style', 'float: right; font-size: 0.7rem;');
+
     var version = 'unknown';
     if (metadata.hasOwnProperty('version')) {
       version = 'v' + metadata.version;
     }
-    return '<span style="float: right; font-size: 0.7rem;"' + (version === 'unknown' ? ' title="Unknown because currently not provided by the DebOps API (reason: Standards Version too old)." ' : '') + '>[Release: ' + version + ']</span>';
+    if (version === 'unknown') {
+      elem.setAttribute('title', 'Unknown because currently not provided by the DebOps API (reason: Standards Version too old).');
+    }
+
+    elem.innerHTML = '[Release: ' + version + ']';
+    return elem;
   }
 
   function min_ansible_version(metadata, role_full_name) {
@@ -66,7 +79,7 @@
           row.insertCell(2).insertAdjacentHTML('beforeend',
             testsuite_link(data[key], key)
           );
-          row.insertCell(3).insertAdjacentHTML('beforeend',
+          row.insertCell(3).appendChild(
             role_version(data[key], key)
           );
           row.insertCell(4).insertAdjacentHTML('beforeend',
