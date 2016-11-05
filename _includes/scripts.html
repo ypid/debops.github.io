@@ -46,6 +46,22 @@
     return a;
   }
 
+  function docs(metadata, role_full_name) {
+    if (metadata.hasOwnProperty('docs_url')) {
+      var elem = document.createElement('a');
+      elem.setAttribute('href', metadata.docs_url);
+      elem.innerHTML = '→';
+    } else {
+      var elem = document.createElement('span');
+      elem.innerHTML = 'n.&#x202F;a.';
+      elem.setAttribute('title', 'There is no rendered version of the documentation available. Either because the role has not been documneted yet or because it is not fully up-to-date. You can help us improve that it!');
+    }
+
+    elem.setAttribute('class', 'item_attr');
+
+    return elem;
+  }
+
   function role_format_version(metadata, role_full_name) {
     var span = document.createElement('span');
     span.setAttribute('class', 'item_attr');
@@ -123,9 +139,10 @@
           row.insertCell(0).appendChild(github_repo(data[key], key));
           row.insertCell(1).appendChild(travis_badge(data[key], key));
           row.insertCell(2).appendChild(testsuite_link(data[key], key));
-          row.insertCell(3).appendChild(role_version(data[key], key));
-          row.insertCell(4).appendChild(role_format_version(data[key], key));
-          row.insertCell(5).appendChild(get_maintainers(data[key], key));
+          row.insertCell(3).appendChild(docs(data[key], key));
+          row.insertCell(4).appendChild(role_version(data[key], key));
+          row.insertCell(5).appendChild(role_format_version(data[key], key));
+          row.insertCell(6).appendChild(get_maintainers(data[key], key));
         }
       }
       document.getElementById('role_count').innerHTML = role_count;
