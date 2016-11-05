@@ -8,6 +8,7 @@ There are <span id="role_count">?</span> roles in the DebOps project.
       <th id="role_name">Role name</th>
       <th>CI status</th>
       <th id="ci_test">CI tests</th>
+      <th>Docs</th>
       <th>Release</th>
       <th>DebOps Standards</th>
       <th id="maintainer">Role Maintainers</th>
