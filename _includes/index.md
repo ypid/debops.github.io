@@ -1,6 +1,6 @@
 ### {{ site.slogan }}
 
-<img src="images/debops.png" width="128" height="128" style="float: right;" />
+<img alt="DebOps Logo" src="images/debops.png" width="128" height="128" style="float: right;" />
 
 A collection of [Ansible](https://ansible.com/) playbooks, scalable from one container to an entire data center.
 
